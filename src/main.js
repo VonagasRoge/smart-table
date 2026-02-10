@@ -81,12 +81,12 @@ const applySorting = initSorting([
   sampleTable.header.elements.sortByTotal,
 ]);
 
-const applySearching = initSearching("search");
-
 const applyFiltering = initFiltering(sampleTable.filter.elements, {
   // передаём элементы фильтра
   searchBySeller: indexes.sellers // для элемента с именем searchBySeller устанавливаем массив продавцов
 });
+
+const applySearching = initSearching("search");
 
 const appRoot = document.querySelector("#app");
 appRoot.appendChild(sampleTable.container);

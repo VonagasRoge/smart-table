@@ -20,17 +20,38 @@ export function initFiltering(elements, indexes) {
   return (data, state, action) => {
     // @todo: #4.2 — обработать очистку поля
     if (action && action.name === "clear") {
-      const field = action.dataset.field; // например "date" или "customer"
-      const wrapper = action.parentElement; // label.filter-wrapper
-      const input = wrapper.querySelector("input");
-
-      if (input) {
-        input.value = "";
-        state[field] = "";
-      }
-    }
-
+        const fieldName = action.dataset.field; 
+        if (fieldName) {
+            const parent = action.parentElement;
+                const input = parent.querySelector('input');
+                if (input) {
+                    input.value = "";
+                    state[fieldName] = "";
+                }
+            }
+        }
+        
     // @todo: #4.5 — отфильтровать данные используя компаратор
-    return data.filter((row) => compare(row, state));
-  };
+     return data.filter((row) => {
+            const standardMatch = compare(row, state);
+            let rangeMatch = true;
+            
+            if (state.totalFrom && state.totalFrom.trim() !== '') {
+                const min = Number(state.totalFrom);
+                const value = Number(row.total);
+                if (!isNaN(min) && !isNaN(value)) {
+                    rangeMatch = rangeMatch && (value >= min);
+                }
+            }
+            
+            if (state.totalTo && state.totalTo.trim() !== '') {
+                const max = Number(state.totalTo);
+                const value = Number(row.total);
+                if (!isNaN(max) && !isNaN(value)) {
+                    rangeMatch = rangeMatch && (value <= max);
+                }
+            }
+            return standardMatch && rangeMatch;
+        });
+    };
 }
